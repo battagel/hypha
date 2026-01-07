@@ -29,40 +29,17 @@ hypha search "status:in-progress client:acme"
 
 ## Quick Start
 
-### CLI
-
-**Install from source:**
-```bash
-git clone https://github.com/battagel/hypha.git
-cd hypha/cli
-cargo install --path .
-```
-
-**Or download a binary** from [releases](https://github.com/battagel/hypha/releases).
-
-**Get started:**
 - [Getting Started with the CLI](docs/tutorials/getting-started-cli.md)
-
-### VS Code Extension
-
-1. Install the [Hypha CLI](#cli) first
-2. Download the `.vsix` from [releases](https://github.com/battagel/hypha/releases)
-3. Install: `code --install-extension hypha-vscode-1.0.1-alpha.vsix`
-
-**Get started:**
 - [Getting Started with VS Code](docs/tutorials/getting-started-vscode.md)
 
 ## Documentation
 
-See [docs/](docs/README.md) for full documentation:
+See [docs/](docs/) for full documentation following the [Diátaxis framework](https://diataxis.fr/):
 
-- **Tutorials**: [CLI](docs/tutorials/getting-started-cli.md) | [VS Code](docs/tutorials/getting-started-vscode.md)
-- **References**: [CLI Commands](docs/references/cli.md) | [Query Syntax](docs/references/query-syntax.md) | [Frontmatter](docs/references/frontmatter.md)
-- **Explanations**: [Architecture](docs/explanations/architecture.md) | [Linking](docs/explanations/linking.md) | [Frontmatter](docs/explanations/frontmatter-schema.md)
-
-## Contributing
-
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+- [tutorials/](docs/tutorials/) - Getting started guides
+- [how-to/](docs/how-to/) - Task-oriented guides
+- [references/](docs/references/) - Command and syntax reference
+- [explanations/](docs/explanations/) - Conceptual documentation
 
 ## License
 
