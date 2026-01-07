@@ -35,4 +35,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [X.Y.Z]: https://github.com/battagel/hypha/compare/vX.Y.Z-1...vX.Y.Z
 -->
-

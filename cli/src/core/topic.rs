@@ -105,7 +105,7 @@ impl Topic {
     }
 
     /// Format for display.
-    pub fn display(&self) -> TopicDisplay {
+    pub fn display(&self) -> TopicDisplay<'_> {
         TopicDisplay(self)
     }
 }

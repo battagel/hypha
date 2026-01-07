@@ -1,0 +1,55 @@
+name: Documentation
+run-name: Docs Lint (${{ github.ref_name }})
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli2
+
+      - name: Lint Markdown
+        id: mdlint
+        run: |
+          set +e
+          OUTPUT=$(markdownlint-cli2 "**/*.md" "#node_modules" "#vscode/node_modules" "#.github/COMMIT_TEMPLATE.md" 2>&1)
+          EXIT_CODE=$?
+          echo "$OUTPUT"
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          exit $EXIT_CODE
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Markdown Lint" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.mdlint.outcome }}" == "success" ]; then
+            echo "✅ All markdown files pass linting" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Linting errors found" >> $GITHUB_STEP_SUMMARY
+          fi

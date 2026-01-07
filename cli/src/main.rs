@@ -13,15 +13,19 @@ use cli::{Cli, Commands};
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    // Ensure config exists (interactive setup if needed)
-    let config = config::ensure_configured()?;
-
     // Resolve root directory (CLI flag overrides config)
-    let root_override = cli.root.is_some();
-    let root = match cli.root {
-        Some(path) => path,
-        None => config.require_root_dir()?,
+    let root = match &cli.root {
+        Some(path) => {
+            // When --root is provided, skip config entirely
+            path.clone()
+        },
+        None => {
+            // Ensure config exists (interactive setup if needed)
+            let config = config::ensure_configured()?;
+            config.require_root_dir()?
+        }
     };
+    let root_override = cli.root.is_some();
 
     match cli.command {
         Commands::New { title, no_edit } => commands::new::run(&root, &title, !no_edit),

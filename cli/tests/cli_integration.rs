@@ -70,13 +70,18 @@ mod backlinks {
     #[test]
     fn backlinks_json_output() {
         let fixtures = fixtures_path();
-        let (stdout, _, success) = run_hypha(&[
+        let (stdout, _stderr, success) = run_hypha(&[
             "--root", fixtures.to_str().unwrap(),
             "backlinks", "topic-b", "--json"
         ]);
 
-        assert!(success);
-        let parsed: serde_json::Value = serde_json::from_str(&stdout)
+        assert!(success, "Command should succeed");
+        
+        // Trim whitespace and find JSON content (in case there's extra output)
+        let json_content = stdout.trim();
+        assert!(!json_content.is_empty(), "Stdout should not be empty");
+        
+        let parsed: serde_json::Value = serde_json::from_str(json_content)
             .expect("Should be valid JSON");
         
         assert!(parsed.is_array());

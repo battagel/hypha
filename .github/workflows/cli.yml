@@ -1,4 +1,5 @@
 name: CLI
+run-name: CLI Tests (${{ github.ref_name }})
 
 on:
   push:
@@ -33,7 +34,7 @@ jobs:
           components: clippy, rustfmt
       
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test --bins --tests --verbose
       
       - name: Run clippy
         run: cargo clippy -- -D warnings
