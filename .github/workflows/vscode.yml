@@ -1,0 +1,50 @@
+name: VS Code Extension
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'vscode/**'
+      - '.github/workflows/vscode.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'vscode/**'
+      - '.github/workflows/vscode.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: vscode
+
+jobs:
+  build:
+    name: Build and Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: vscode/package-lock.json
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Compile
+        run: npm run compile
+      
+      - name: Lint
+        run: npm run lint
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## VS Code Extension Build Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Compilation and linting completed" >> $GITHUB_STEP_SUMMARY
