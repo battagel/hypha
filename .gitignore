@@ -1,0 +1,25 @@
+# Rust build artifacts
+cli/target/
+
+# Node.js
+vscode/node_modules/
+vscode/out/
+
+# VS Code extension packages
+vscode/*.vsix
+
+# Placeholder files (replace before publishing)
+vscode/icon.png
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Debug
+*.pdb
