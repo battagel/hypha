@@ -1,0 +1,32 @@
+[package]
+name = "hypha"
+version = "1.0.1-alpha"
+edition = "2021"
+description = "A CLI for managing markdown notes with rich metadata"
+license = "MIT"
+repository = "https://github.com/battagel/hypha"
+homepage = "https://github.com/battagel/hypha"
+keywords = ["markdown", "notes", "cli", "knowledge-management"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "hypha"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0.9"
+toml = "0.8"
+dirs = "5"
+glob = "0.3"
+walkdir = "2"
+anyhow = "1"
+colored = "2"
+regex = "1"
+serde_json = "1"
+reqwest = { version = "0.11", features = ["blocking"] }
+pulldown-cmark = "0.13.0"
+
+[dev-dependencies]
+tempfile = "3"
