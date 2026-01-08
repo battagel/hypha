@@ -24,15 +24,19 @@ jobs:
         include:
           - os: ubuntu-latest
             target: linux-x86_64
+            rust_target: x86_64-unknown-linux-gnu
             binary: hypha
-          - os: macos-13
+          - os: macos-latest
             target: darwin-x86_64
+            rust_target: x86_64-apple-darwin
             binary: hypha
           - os: macos-latest
             target: darwin-aarch64
+            rust_target: aarch64-apple-darwin
             binary: hypha
           - os: windows-latest
             target: windows-x86_64
+            rust_target: x86_64-pc-windows-msvc
             binary: hypha.exe
     steps:
       - name: Checkout
@@ -52,19 +56,27 @@ jobs:
 
       - name: Build CLI
         uses: ./.github/actions/build-cli
+        with:
+          rust-target: ${{ matrix.rust_target }}
 
       - name: Rename Binary
         shell: bash
         run: |
-          cd cli/target/release
-          cp ${{ matrix.binary }} hypha-${{ steps.version.outputs.version }}-${{ matrix.target }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-          ls -lh
+          if [ -n "${{ matrix.rust_target }}" ]; then
+            BINARY_PATH="cli/target/${{ matrix.rust_target }}/release/${{ matrix.binary }}"
+          else
+            BINARY_PATH="cli/target/release/${{ matrix.binary }}"
+          fi
+          OUTPUT_NAME="hypha-${{ steps.version.outputs.version }}-${{ matrix.target }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}"
+          mkdir -p release-binaries
+          cp "$BINARY_PATH" "release-binaries/$OUTPUT_NAME"
+          ls -lh release-binaries/
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: hypha-cli-${{ matrix.target }}
-          path: cli/target/release/hypha-${{ steps.version.outputs.version }}-${{ matrix.target }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          path: release-binaries/hypha-${{ steps.version.outputs.version }}-${{ matrix.target }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
   build-extension:
     name: Build VS Code Extension

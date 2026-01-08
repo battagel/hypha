@@ -6,6 +6,10 @@ inputs:
     description: 'Directory containing Cargo.toml'
     required: false
     default: 'cli'
+  rust-target:
+    description: 'Rust target triple for cross-compilation'
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -14,9 +18,14 @@ runs:
       uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
         toolchain: stable
+        target: ${{ inputs.rust-target }}
     
     - name: Build CLI
       shell: bash
       run: |
         cd ${{ inputs.working-directory }}
-        cargo build --release --verbose
+        if [ -n "${{ inputs.rust-target }}" ]; then
+          cargo build --release --target ${{ inputs.rust-target }} --verbose
+        else
+          cargo build --release --verbose
+        fi
