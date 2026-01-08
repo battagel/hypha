@@ -18,13 +18,26 @@ permissions:
 jobs:
   build-cli:
     name: Build CLI
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x86_64
+            binary: hypha
+          - os: macos-latest
+            target: darwin-x86_64
+            binary: hypha
+          - os: windows-latest
+            target: windows-x86_64
+            binary: hypha.exe
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Determine Version
         id: version
+        shell: bash
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             VERSION="${{ github.event.inputs.version }}"
@@ -45,16 +58,17 @@ jobs:
           cargo build --release
 
       - name: Rename Binary
+        shell: bash
         run: |
           cd cli/target/release
-          cp hypha hypha-${{ steps.version.outputs.version }}-linux-x86_64
+          cp ${{ matrix.binary }} hypha-${{ steps.version.outputs.version }}-${{ matrix.target }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
           ls -lh
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hypha-cli
-          path: cli/target/release/hypha-${{ steps.version.outputs.version }}-linux-x86_64
+          name: hypha-cli-${{ matrix.target }}
+          path: cli/target/release/hypha-${{ steps.version.outputs.version }}-${{ matrix.target }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
   build-extension:
     name: Build VS Code Extension
@@ -115,7 +129,7 @@ jobs:
         run: |
           ls -R artifacts/
           mkdir release-files
-          cp artifacts/hypha-cli/* release-files/
+          cp artifacts/hypha-cli-*/* release-files/
           cp artifacts/vscode-extension/* release-files/
           ls -lh release-files/
 
