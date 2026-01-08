@@ -153,7 +153,7 @@ jobs:
           echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
-          echo "- CLRelease Files" >> $GITHUB_STEP_SUMMARY
+          echo "- CLI Release Files" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           ls -lh release-files/ >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
