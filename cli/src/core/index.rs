@@ -27,24 +27,16 @@ fn sort_topics(topics: &mut [Topic], sort: SortOrder) {
         }
         SortOrder::Modified => {
             topics.sort_by(|a, b| {
-                let a_time = fs::metadata(&a.path)
-                    .and_then(|m| m.modified())
-                    .ok();
-                let b_time = fs::metadata(&b.path)
-                    .and_then(|m| m.modified())
-                    .ok();
+                let a_time = fs::metadata(&a.path).and_then(|m| m.modified()).ok();
+                let b_time = fs::metadata(&b.path).and_then(|m| m.modified()).ok();
                 // Most recent first
                 b_time.cmp(&a_time)
             });
         }
         SortOrder::Created => {
             topics.sort_by(|a, b| {
-                let a_time = fs::metadata(&a.path)
-                    .and_then(|m| m.created())
-                    .ok();
-                let b_time = fs::metadata(&b.path)
-                    .and_then(|m| m.created())
-                    .ok();
+                let a_time = fs::metadata(&a.path).and_then(|m| m.created()).ok();
+                let b_time = fs::metadata(&b.path).and_then(|m| m.created()).ok();
                 // Most recent first
                 b_time.cmp(&a_time)
             });
@@ -103,10 +95,10 @@ pub fn search(root: &Path, query_str: &str, sort: SortOrder) -> Result<Vec<Topic
         .into_iter()
         .filter(|t| query::matches(t, &query))
         .collect();
-    
+
     // Re-sort filtered results
     sort_topics(&mut results, sort);
-    
+
     Ok(results)
 }
 
@@ -131,7 +123,7 @@ pub fn stats(root: &Path) -> Result<IndexStats> {
             };
             if has_value {
                 *fields.entry(key.clone()).or_insert(0) += 1;
-                
+
                 // Track individual values
                 let values_map = field_values.entry(key.clone()).or_default();
                 match value {

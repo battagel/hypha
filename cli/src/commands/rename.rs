@@ -9,11 +9,14 @@ use crate::utils::slugify;
 /// Rename a topic and update all links pointing to it.
 pub fn run(root: &Path, from: &str, to: &str) -> Result<()> {
     let topics = index::list(root, SortOrder::Alpha)?;
-    
+
     // Find the source topic
     let source = topics.iter().find(|t| {
-        t.title.eq_ignore_ascii_case(from) || 
-        t.path.file_stem().map(|s| s.to_string_lossy().eq_ignore_ascii_case(from)).unwrap_or(false)
+        t.title.eq_ignore_ascii_case(from)
+            || t.path
+                .file_stem()
+                .map(|s| s.to_string_lossy().eq_ignore_ascii_case(from))
+                .unwrap_or(false)
     });
 
     let source = match source {
@@ -22,10 +25,12 @@ pub fn run(root: &Path, from: &str, to: &str) -> Result<()> {
     };
 
     let old_path = source.path.clone();
-    let old_filename = old_path.file_name()
+    let old_filename = old_path
+        .file_name()
         .map(|s| s.to_string_lossy().to_string())
         .unwrap_or_default();
-    let old_stem = old_path.file_stem()
+    let old_stem = old_path
+        .file_stem()
         .map(|s| s.to_string_lossy().to_string())
         .unwrap_or_default();
 
@@ -59,7 +64,7 @@ pub fn run(root: &Path, from: &str, to: &str) -> Result<()> {
 
         let content = fs::read_to_string(&t.path)?;
         let updated = update_links(&content, &old_filename, &old_stem, &new_filename, &new_stem);
-        
+
         if updated != content {
             fs::write(&t.path, updated)?;
             updated_count += 1;
@@ -80,7 +85,7 @@ fn update_heading(content: &str, new_title: &str) -> String {
     let lines: Vec<&str> = content.lines().collect();
     let mut result = Vec::new();
     let mut heading_updated = false;
-    
+
     for line in lines {
         if !heading_updated && line.starts_with("# ") {
             result.push(format!("# {}", new_title));
@@ -89,21 +94,33 @@ fn update_heading(content: &str, new_title: &str) -> String {
             result.push(line.to_string());
         }
     }
-    
+
     result.join("\n")
 }
 
 /// Update links from old filename to new filename.
-fn update_links(content: &str, old_filename: &str, old_stem: &str, new_filename: &str, new_stem: &str) -> String {
+fn update_links(
+    content: &str,
+    old_filename: &str,
+    old_stem: &str,
+    new_filename: &str,
+    new_stem: &str,
+) -> String {
     let mut result = content.to_string();
-    
+
     // Update markdown links: [text](old-file.md) -> [text](new-file.md)
-    result = result.replace(&format!("]({})", old_filename), &format!("]({})", new_filename));
+    result = result.replace(
+        &format!("]({})", old_filename),
+        &format!("]({})", new_filename),
+    );
     result = result.replace(&format!("]({})", old_stem), &format!("]({})", new_stem));
-    
+
     // Update wiki links: [[old-file]] -> [[new-file]]
-    result = result.replace(&format!("[[{}]]", old_filename.trim_end_matches(".md")), &format!("[[{}]]", new_stem));
+    result = result.replace(
+        &format!("[[{}]]", old_filename.trim_end_matches(".md")),
+        &format!("[[{}]]", new_stem),
+    );
     result = result.replace(&format!("[[{}]]", old_stem), &format!("[[{}]]", new_stem));
-    
+
     result
 }

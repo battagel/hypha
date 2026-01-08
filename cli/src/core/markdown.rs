@@ -44,84 +44,81 @@ fn offset_to_position(content: &str, offset: usize) -> Position {
 
 /// Parse markdown content and extract title, description, and links.
 pub fn parse(content: &str) -> ParsedMarkdown {
-        use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag, TagEnd};
+    use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag, TagEnd};
 
-        let parser = Parser::new_ext(content, Options::empty()).into_offset_iter();
+    let parser = Parser::new_ext(content, Options::empty()).into_offset_iter();
 
-        let mut result = ParsedMarkdown::default();
+    let mut result = ParsedMarkdown::default();
 
-        let mut in_h1 = false;
-        let mut after_h1 = false;
-        let mut in_first_paragraph = false;
-        let mut h1_text = String::new();
-        let mut paragraph_text = String::new();
+    let mut in_h1 = false;
+    let mut after_h1 = false;
+    let mut in_first_paragraph = false;
+    let mut h1_text = String::new();
+    let mut paragraph_text = String::new();
 
-        for (event, range) in parser {
-            match event {
-                // Track when we enter/exit an H1 heading
-                Event::Start(Tag::Heading {
-                    level: HeadingLevel::H1,
-                    ..
-                }) => {
-                    if result.title.is_none() {
-                        in_h1 = true;
-                    }
+    for (event, range) in parser {
+        match event {
+            // Track when we enter/exit an H1 heading
+            Event::Start(Tag::Heading {
+                level: HeadingLevel::H1,
+                ..
+            }) => {
+                if result.title.is_none() {
+                    in_h1 = true;
                 }
-                Event::End(TagEnd::Heading(HeadingLevel::H1)) => {
-                    if in_h1 {
-                        in_h1 = false;
-                        after_h1 = true;
-                        let trimmed = h1_text.trim().to_string();
-                        if !trimmed.is_empty() {
-                            result.title = Some(trimmed);
-                        }
-                    }
-                }
-
-                // Track first paragraph after H1 for description
-                Event::Start(Tag::Paragraph) => {
-                    if after_h1 && result.description.is_none() {
-                        in_first_paragraph = true;
-                    }
-                }
-                Event::End(TagEnd::Paragraph) => {
-                    if in_first_paragraph {
-                        in_first_paragraph = false;
-                        let trimmed = paragraph_text.trim().to_string();
-                        if !trimmed.is_empty() {
-                            result.description = Some(trimmed);
-                        }
-                    }
-                }
-
-                // Collect text
-                Event::Text(text) | Event::Code(text) => {
-                    if in_h1 {
-                        h1_text.push_str(&text);
-                    } else if in_first_paragraph {
-                        paragraph_text.push_str(&text);
-                    }
-                }
-
-                // Collect local links with line and column numbers
-                Event::Start(Tag::Link { dest_url, .. }) => {
-                    let url = dest_url.as_ref();
-                    if !url.starts_with("http://")
-                        && !url.starts_with("https://")
-                        && !url.is_empty()
-                    {
-                        let pos = offset_to_position(content, range.start);
-                        result.links.push(ParsedLink {
-                            target: url.to_string(),
-                            line: pos.line,
-                            column: pos.column,
-                        });
-                    }
-                }
-
-                _ => {}
             }
+            Event::End(TagEnd::Heading(HeadingLevel::H1)) => {
+                if in_h1 {
+                    in_h1 = false;
+                    after_h1 = true;
+                    let trimmed = h1_text.trim().to_string();
+                    if !trimmed.is_empty() {
+                        result.title = Some(trimmed);
+                    }
+                }
+            }
+
+            // Track first paragraph after H1 for description
+            Event::Start(Tag::Paragraph) => {
+                if after_h1 && result.description.is_none() {
+                    in_first_paragraph = true;
+                }
+            }
+            Event::End(TagEnd::Paragraph) => {
+                if in_first_paragraph {
+                    in_first_paragraph = false;
+                    let trimmed = paragraph_text.trim().to_string();
+                    if !trimmed.is_empty() {
+                        result.description = Some(trimmed);
+                    }
+                }
+            }
+
+            // Collect text
+            Event::Text(text) | Event::Code(text) => {
+                if in_h1 {
+                    h1_text.push_str(&text);
+                } else if in_first_paragraph {
+                    paragraph_text.push_str(&text);
+                }
+            }
+
+            // Collect local links with line and column numbers
+            Event::Start(Tag::Link { dest_url, .. }) => {
+                let url = dest_url.as_ref();
+                if !url.starts_with("http://") && !url.starts_with("https://") && !url.is_empty() {
+                    let pos = offset_to_position(content, range.start);
+                    result.links.push(ParsedLink {
+                        target: url.to_string(),
+                        line: pos.line,
+                        column: pos.column,
+                    });
+                }
+            }
+
+            _ => {}
         }
+    }
 
     result
 }
@@ -139,7 +136,10 @@ mod tests {
     #[test]
     fn test_parse_description() {
         let result = parse("# Title\n\nThis is the description.\n\nMore content.");
-        assert_eq!(result.description, Some("This is the description.".to_string()));
+        assert_eq!(
+            result.description,
+            Some("This is the description.".to_string())
+        );
     }
 
     #[test]

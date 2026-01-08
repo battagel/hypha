@@ -18,7 +18,7 @@ fn main() -> Result<()> {
         Some(path) => {
             // When --root is provided, skip config entirely
             path.clone()
-        },
+        }
         None => {
             // Ensure config exists (interactive setup if needed)
             let config = config::ensure_configured()?;

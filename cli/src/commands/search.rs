@@ -33,7 +33,7 @@ impl From<&Topic> for TopicJson {
 /// Search topics by query.
 pub fn run(root: &Path, query: &str, json: bool, sort: SortOrder) -> Result<()> {
     let topics = index::search(root, query, sort)?;
-    
+
     if json {
         let json_topics: Vec<TopicJson> = topics.iter().map(TopicJson::from).collect();
         println!("{}", serde_json::to_string(&json_topics)?);

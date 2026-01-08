@@ -38,10 +38,7 @@ pub fn parse(content: &str) -> FrontmatterResult {
             .count();
 
         // Count and trim leading newlines from body (these are still "before" content)
-        let leading_newlines = body_with_leading
-            .chars()
-            .take_while(|&c| c == '\n')
-            .count();
+        let leading_newlines = body_with_leading.chars().take_while(|&c| c == '\n').count();
         frontmatter_lines += leading_newlines;
         let body = &body_with_leading[leading_newlines..];
 

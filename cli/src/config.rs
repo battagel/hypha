@@ -55,7 +55,10 @@ impl Config {
         match &self.root_dir {
             Some(path) => {
                 if !path.exists() {
-                    println!("Configured root directory does not exist: {}", path.display());
+                    println!(
+                        "Configured root directory does not exist: {}",
+                        path.display()
+                    );
                     println!("Creating it now...");
                     fs::create_dir_all(path)?;
                 }
@@ -74,7 +77,7 @@ impl Config {
 /// Ensure config exists, running interactive setup if needed
 pub fn ensure_configured() -> Result<Config> {
     let config = Config::load()?;
-    
+
     if config.root_dir.is_none() {
         println!("Welcome to Hypha! Let's get you set up.\n");
         return interactive_setup();
@@ -90,7 +93,10 @@ pub fn interactive_setup() -> Result<Config> {
         .map(|h| h.join(PROJECT_NAME))
         .unwrap_or_else(|| PathBuf::from(format!("./{}", PROJECT_NAME)));
 
-    print!("Where would you like to store your notes? [{}]: ", default_path.display());
+    print!(
+        "Where would you like to store your notes? [{}]: ",
+        default_path.display()
+    );
     io::stdout().flush()?;
 
     let mut input = String::new();
@@ -126,7 +132,10 @@ pub fn interactive_setup() -> Result<Config> {
     };
     config.save()?;
 
-    println!("\nConfiguration saved to: {}", Config::config_path()?.display());
+    println!(
+        "\nConfiguration saved to: {}",
+        Config::config_path()?.display()
+    );
     println!("Notes directory: {}", path.display());
     println!();
 

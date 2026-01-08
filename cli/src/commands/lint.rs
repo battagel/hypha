@@ -33,7 +33,11 @@ impl From<&TopicWarning> for WarningInfo {
                 line: None,
                 column: None,
             },
-            TopicWarning::BrokenLink { target, line, column } => WarningInfo {
+            TopicWarning::BrokenLink {
+                target,
+                line,
+                column,
+            } => WarningInfo {
                 message: format!("Broken link: {}", target),
                 line: Some(*line),
                 column: Some(*column),
@@ -160,7 +164,10 @@ mod tests {
     #[test]
     fn extract_link_path_with_anchor() {
         assert_eq!(extract_link_path("file.md#section"), Some("file.md"));
-        assert_eq!(extract_link_path("./docs/file.md#heading"), Some("./docs/file.md"));
+        assert_eq!(
+            extract_link_path("./docs/file.md#heading"),
+            Some("./docs/file.md")
+        );
     }
 
     #[test]
@@ -207,7 +214,12 @@ mod tests {
         let result = check_link(&topic_path, &link);
         assert!(result.is_some());
 
-        if let Some(TopicWarning::BrokenLink { target, line, column }) = result {
+        if let Some(TopicWarning::BrokenLink {
+            target,
+            line,
+            column,
+        }) = result
+        {
             assert_eq!(target, "missing.md");
             assert_eq!(line, 5);
             assert_eq!(column, 3);

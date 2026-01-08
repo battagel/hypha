@@ -32,19 +32,19 @@ pub fn run(root: &Path, verbose: bool, root_override: bool) -> Result<()> {
         println!();
         println!("Field Details:");
         println!("{}", "=".repeat(40));
-        
+
         // Sort fields by occurrence count (descending)
         let mut fields: Vec<_> = stats.fields.iter().collect();
         fields.sort_by(|a, b| b.1.cmp(a.1));
-        
+
         for (field_name, field_count) in fields {
             println!();
             println!("{} ({} topics):", field_name, field_count);
-            
+
             if let Some(values) = stats.field_values.get(field_name) {
                 let mut sorted_values: Vec<_> = values.iter().collect();
                 sorted_values.sort_by(|a, b| b.1.cmp(a.1));
-                
+
                 for (value, count) in sorted_values {
                     println!("  {} ({})", value, count);
                 }

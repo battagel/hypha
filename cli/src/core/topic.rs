@@ -14,7 +14,11 @@ pub enum TopicWarning {
     MissingTitle,
     EmptyContent,
     /// Broken link with target, line, and column number.
-    BrokenLink { target: String, line: usize, column: usize },
+    BrokenLink {
+        target: String,
+        line: usize,
+        column: usize,
+    },
 }
 
 impl std::fmt::Display for TopicWarning {
@@ -22,7 +26,11 @@ impl std::fmt::Display for TopicWarning {
         match self {
             TopicWarning::MissingTitle => write!(f, "Missing title (no # heading)"),
             TopicWarning::EmptyContent => write!(f, "Empty content"),
-            TopicWarning::BrokenLink { target, line, column } => {
+            TopicWarning::BrokenLink {
+                target,
+                line,
+                column,
+            } => {
                 write!(f, "Broken link: {} (line {}, col {})", target, line, column)
             }
         }
@@ -212,7 +220,10 @@ mod tests {
         let topic = Topic::from_content(Path::new("test.md"), content);
 
         assert_eq!(topic.title, "Title");
-        assert_eq!(topic.description, Some("This is the description.".to_string()));
+        assert_eq!(
+            topic.description,
+            Some("This is the description.".to_string())
+        );
     }
 
     #[test]

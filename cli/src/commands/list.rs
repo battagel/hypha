@@ -33,7 +33,7 @@ impl From<&Topic> for TopicJson {
 /// List all topics.
 pub fn run(root: &Path, json: bool, sort: SortOrder) -> Result<()> {
     let topics = index::list(root, sort)?;
-    
+
     if json {
         let json_topics: Vec<TopicJson> = topics.iter().map(TopicJson::from).collect();
         println!("{}", serde_json::to_string(&json_topics)?);

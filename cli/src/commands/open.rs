@@ -39,10 +39,11 @@ pub fn run(root: &Path, query: &str) -> Result<()> {
 pub fn open_in_editor(path: &Path) -> Result<()> {
     let editor = std::env::var("EDITOR").unwrap_or_else(|_| "vim".to_string());
 
-    Command::new(&editor)
-        .arg(path)
-        .status()
-        .context(format!("Failed to open {} with {}", path.display(), editor))?;
+    Command::new(&editor).arg(path).status().context(format!(
+        "Failed to open {} with {}",
+        path.display(),
+        editor
+    ))?;
 
     Ok(())
 }
