@@ -4,23 +4,54 @@ A step-by-step guide to installing and using the Hypha CLI.
 
 ## Prerequisites
 
-- [Rust toolchain](https://rustup.rs/) (1.70 or later)
 - A terminal (zsh, bash, etc.)
 
 ## Installation
 
-Clone the repository and install the CLI:
+### Download Pre-built Binary (Recommended)
+
+Download the latest release for your platform from [GitHub Releases](https://github.com/battagel/hypha/releases/latest):
+
+- **Linux**: `hypha-v*-linux-x86_64`
+- **macOS (Intel)**: `hypha-v*-darwin-x86_64`
+- **macOS (Apple Silicon)**: `hypha-v*-darwin-aarch64`
+- **Windows**: `hypha-v*-windows-x86_64.exe`
+
+Make the binary executable and add it to your PATH:
+
+```bash
+# Linux/macOS (user-level, no sudo required)
+chmod +x hypha-v*-*
+mkdir -p ~/.local/bin
+mv hypha-v*-* ~/.local/bin/hypha
+
+# Add to PATH if not already (add to ~/.zshrc or ~/.bashrc)
+export PATH="$HOME/.local/bin:$PATH"
+
+# System-wide (requires sudo)
+# sudo mv hypha-v*-* /usr/local/bin/hypha
+
+# Windows (PowerShell)
+# Create a bin directory in your user profile
+# New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\bin"
+# Move-Item hypha-v*-windows-x86_64.exe "$env:USERPROFILE\bin\hypha.exe"
+# Then add %USERPROFILE%\bin to your user PATH in System Properties
+```
+
+Verify installation:
+
+```bash
+hypha --version
+```
+
+### Build from Source (Alternative)
+
+If you prefer to build from source, you'll need [Rust toolchain](https://rustup.rs/) (1.70 or later):
 
 ```bash
 git clone https://github.com/battagel/hypha.git
 cd hypha/cli
 cargo install --path .
-```
-
-Verify it installed correctly:
-
-```bash
-hypha --version
 ```
 
 ## Initial Setup

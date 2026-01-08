@@ -11,38 +11,21 @@ The extension requires the CLI to be installed and in your `PATH`. Install the C
 
 ## Installation
 
-### From VSIX (Packaged)
+### Install from Release (Recommended)
+
+Download the `hypha-*.vsix` file from the [latest release](https://github.com/battagel/hypha/releases/latest) and install:
 
 ```bash
-cd vscode
-npm install
-npx vsce package
-code --install-extension hypha-vscode-1.0.1-alpha.vsix
+code --install-extension hypha-*.vsix
 ```
 
-### From Source
+Or install via the VS Code UI:
 
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/battagel/hypha.git
-   cd hypha/vscode
-   ```
-
-2. Install dependencies and compile:
-
-   ```bash
-   npm install
-   npm run compile
-   ```
-
-3. Open VS Code in the extension directory:
-
-   ```bash
-   code .
-   ```
-
-4. Press `F5` to launch a new VS Code window with the extension loaded.
+1. Open VS Code
+2. Go to Extensions view (`Cmd+Shift+X` or `Ctrl+Shift+X`)
+3. Click the `...` menu at the top of the Extensions view
+4. Select **Install from VSIX...**
+5. Browse to the downloaded `.vsix` file
 
 ## Initial Configuration
 
