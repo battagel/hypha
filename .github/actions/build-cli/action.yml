@@ -1,0 +1,22 @@
+name: Build CLI
+description: Build the Hypha CLI binary
+
+inputs:
+  working-directory:
+    description: 'Directory containing Cargo.toml'
+    required: false
+    default: 'cli'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: stable
+    
+    - name: Build CLI
+      shell: bash
+      run: |
+        cd ${{ inputs.working-directory }}
+        cargo build --release --verbose
