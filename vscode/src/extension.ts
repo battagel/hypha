@@ -132,7 +132,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('hypha')) {
+                // Clear old warnings and refresh
+                treeProvider.setWarnings([]);
+                diagnostics.clear();
                 treeProvider.refresh();
+                // Re-run lint for new config
+                runLintAsync();
             }
         })
     );
