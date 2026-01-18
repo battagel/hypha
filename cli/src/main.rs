@@ -30,12 +30,15 @@ fn main() -> Result<()> {
     match cli.command {
         Commands::New { title, no_edit } => commands::new::run(&root, &title, !no_edit),
         Commands::List { json, sort } => commands::list::run(&root, json, sort),
-        Commands::Search { query, json, sort } => commands::search::run(&root, &query, json, sort),
+        Commands::Find { query, json, sort } => commands::find::run(&root, &query, json, sort),
         Commands::Open { topic } => commands::open::run(&root, &topic),
         Commands::Delete { topic } => commands::delete::run(&root, &topic),
         Commands::Lint { json } => commands::lint::run(&root, json),
         Commands::Info { verbose } => commands::info::run(&root, verbose, root_override),
         Commands::Backlinks { topic, json } => commands::backlinks::run(&root, &topic, json),
         Commands::Rename { from, to } => commands::rename::run(&root, &from, &to),
+        Commands::Search { pattern, json, ignore_case } => {
+            commands::search::run(&root, &pattern, json, ignore_case)
+        }
     }
 }

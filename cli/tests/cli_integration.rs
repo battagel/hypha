@@ -282,24 +282,24 @@ mod list {
     }
 }
 
-mod search {
+mod find {
     use super::*;
 
     #[test]
-    fn search_by_title() {
+    fn find_by_title() {
         let fixtures = fixtures_path();
         let (stdout, _, success) =
-            run_hypha(&["--root", fixtures.to_str().unwrap(), "search", "orphan"]);
+            run_hypha(&["--root", fixtures.to_str().unwrap(), "find", "orphan"]);
 
         assert!(success);
         assert!(stdout.contains("Orphan Topic"));
     }
 
     #[test]
-    fn search_by_tag() {
+    fn find_by_tag() {
         let fixtures = fixtures_path();
         let (stdout, _, success) =
-            run_hypha(&["--root", fixtures.to_str().unwrap(), "search", "tag:orphan"]);
+            run_hypha(&["--root", fixtures.to_str().unwrap(), "find", "tag:orphan"]);
 
         assert!(success);
         assert!(stdout.contains("Topic C"));
@@ -308,12 +308,12 @@ mod search {
     }
 
     #[test]
-    fn search_no_results() {
+    fn find_no_results() {
         let fixtures = fixtures_path();
         let (stdout, _, success) = run_hypha(&[
             "--root",
             fixtures.to_str().unwrap(),
-            "search",
+            "find",
             "nonexistent_query_xyz",
         ]);
 

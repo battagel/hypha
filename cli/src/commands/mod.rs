@@ -1,5 +1,6 @@
 pub mod backlinks;
 pub mod delete;
+pub mod find;
 pub mod info;
 pub mod lint;
 pub mod list;

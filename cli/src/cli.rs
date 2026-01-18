@@ -44,8 +44,8 @@ pub enum Commands {
         #[arg(long, short, value_enum, default_value = "alpha")]
         sort: SortOrder,
     },
-    /// Search topics by query
-    Search {
+    /// Find topics by query
+    Find {
         /// Search query (supports filters like status:active priority:high)
         query: String,
         /// Output as JSON
@@ -91,5 +91,16 @@ pub enum Commands {
         from: String,
         /// New title
         to: String,
+    },
+    /// Search for a pattern in topic content
+    Search {
+        /// Pattern to search for
+        pattern: String,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+        /// Case-insensitive search
+        #[arg(short, long)]
+        ignore_case: bool,
     },
 }

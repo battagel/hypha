@@ -1,6 +1,6 @@
 [package]
 name = "hypha"
-version = "1.0.1-alpha"
+version = "1.1.0"
 edition = "2021"
 description = "A CLI for managing markdown notes with rich metadata"
 license = "MIT"
@@ -27,6 +27,7 @@ regex = "1"
 serde_json = "1"
 reqwest = { version = "0.11", features = ["blocking"] }
 pulldown-cmark = "0.13.0"
+indexmap = "2.13.0"
 
 [dev-dependencies]
 tempfile = "3"

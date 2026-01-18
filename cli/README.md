@@ -25,9 +25,13 @@ hypha new "Project Plan" --no-edit
 # List all topics
 hypha list
 
-# Search topics
-hypha search "meeting notes"
-hypha search "status:active priority:high"
+# Find topics
+hypha find "meeting notes"
+hypha find "status:active priority:high"
+
+# Search content
+hypha search "TODO"
+hypha search "meeting.*notes" -i
 
 # Open a topic in $EDITOR
 hypha open "my-topic"
@@ -55,18 +59,18 @@ hypha --root ~/notes list
 
 ## Query Syntax
 
-Searches support key-value filters and free-text terms:
+Finds support key-value filters and free-text terms:
 
 ```bash
 # Key-value filters (match frontmatter fields)
-hypha search "status:active"
-hypha search "status:active priority:high"
+hypha find "status:active"
+hypha find "status:active priority:high"
 
 # Free-text (matches title)
-hypha search "quarterly review"
+hypha find "quarterly review"
 
 # Combined
-hypha search "status:active quarterly review"
+hypha find "status:active quarterly review"
 ```
 
 Any frontmatter field is queryable (e.g., `priority:high`, `due:2026`, `tags:work`).
