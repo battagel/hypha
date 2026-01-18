@@ -47,17 +47,17 @@ due: 2026-03-15
 All fields are searchable:
 
 ```bash
-hypha search "status:active"
-hypha search "tags:work"
-hypha search "priority:1"
-hypha search "client:acme"
+hypha find "status:active"
+hypha find "tags:work"
+hypha find "priority:1"
+hypha find "client:acme"
 ```
 
 Matching is case-insensitive and partial:
 
 ```bash
-hypha search "status:act"    # matches "active"
-hypha search "due:2026-03"   # matches dates in March
+hypha find "status:act"    # matches "active"
+hypha find "due:2026-03"   # matches dates in March
 ```
 
 For arrays, a match on any element succeeds.

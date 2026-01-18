@@ -67,18 +67,18 @@ hypha search "due:2026-03"     # matches any date in March 2026
 
 ## From VS Code
 
-### Search Command
+### Filter View
 
 1. Press `Cmd+K Shift+F` (macOS) or `Ctrl+K Shift+F` (Windows/Linux)
 2. Enter your query
 3. The sidebar filters to matching topics
 
-### Quick Find
+### Find Topic
 
-For fuzzy title search only:
+For fuzzy title and metadata search:
 
 1. Press `Cmd+K F` / `Ctrl+K F`
-2. Type part of the title
+2. Type part of the title or query
 3. Select from matching topics
 
 ### Clear Search

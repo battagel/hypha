@@ -85,17 +85,17 @@ The sidebar filters to show only matching topics.
 
 **Clear search:** `Cmd+K C` / `Ctrl+K C`
 
-### Content Search
+### Search Content
 
-**Keyboard shortcut:** `Cmd+K Shift+S` / `Ctrl+K Shift+S`
+**Keyboard shortcut:** `Cmd+K S` / `Ctrl+K S`
 
-Opens VS Code's Search panel scoped to your notes directory. Use this to find topics by content rather than frontmatter.
+Opens a quick pick to search within note body text using regex patterns. Results show matching lines with file and line numbers.
 
-## Quick Find
+## Find Topic
 
 **Keyboard shortcut:** `Cmd+K F` / `Ctrl+K F`
 
-Opens a quick pick with fuzzy search across all topic titles. Select a topic to open it.
+Opens a quick pick with fuzzy search across all topic titles and metadata. Select a topic to open it.
 
 ## Finding Backlinks
 
@@ -146,9 +146,9 @@ When you open a markdown file, the corresponding topic is automatically highligh
 | -------- | ------- |
 | `Cmd+K O` | Focus Hypha sidebar |
 | `Cmd+K N` | Create new topic |
-| `Cmd+K F` | Quick find topic |
-| `Cmd+K Shift+F` | Search topics |
-| `Cmd+K Shift+S` | Search in content |
+| `Cmd+K F` | Find topic |
+| `Cmd+K Shift+F` | Filter view |
+| `Cmd+K S` | Search content |
 | `Cmd+K C` | Clear search |
 | `Cmd+K R` | Refresh topic list |
 | `Cmd+K L` | Lint topics |

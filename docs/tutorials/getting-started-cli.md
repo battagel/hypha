@@ -116,23 +116,23 @@ List all topics:
 hypha list
 ```
 
-Search by frontmatter fields:
+Find by frontmatter fields:
 
 ```bash
-hypha search "status:active"
-hypha search "tags:tutorial"
+hypha find "status:active"
+hypha find "tags:tutorial"
 ```
 
-Search by title text:
+Find by title text:
 
 ```bash
-hypha search "first note"
+hypha find "first note"
 ```
 
 Combine filters and text:
 
 ```bash
-hypha search "status:active tutorial"
+hypha find "status:active tutorial"
 ```
 
 ## Linking Between Topics

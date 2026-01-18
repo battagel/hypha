@@ -24,7 +24,7 @@ client: acme-corp
 ```
 
 ```bash
-hypha search "status:in-progress client:acme"
+hypha find "status:in-progress client:acme"
 ```
 
 ## Quick Start

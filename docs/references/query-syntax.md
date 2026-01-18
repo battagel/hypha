@@ -1,11 +1,11 @@
 # Query Syntax Reference
 
-Hypha's search supports key-value filters and free-text terms.
+Hypha's find command supports key-value filters and free-text terms.
 
 ## Basic Syntax
 
 ```text
-hypha search "<filters> <terms>"
+hypha find "<filters> <terms>"
 ```
 
 - **Filters**: `key:value` pairs that match specific frontmatter fields
@@ -15,16 +15,16 @@ hypha search "<filters> <terms>"
 
 ```bash
 # Single filter
-hypha search "status:active"
+hypha find "status:active"
 
 # Multiple filters (AND logic)
-hypha search "status:active priority:high"
+hypha find "status:active priority:high"
 
 # Free-text only
-hypha search "meeting notes"
+hypha find "meeting notes"
 
 # Combined
-hypha search "status:active quarterly review"
+hypha find "status:active quarterly review"
 ```
 
 ## Field Filters
@@ -41,9 +41,9 @@ due: 2026-03-01
 ```
 
 ```bash
-hypha search "priority:high"
-hypha search "project:hypha"
-hypha search "due:2026"
+hypha find "priority:high"
+hypha find "project:hypha"
+hypha find "due:2026"
 ```
 
 ## Matching Behavior
@@ -84,4 +84,4 @@ Whitespace separates tokens. A token with `:` is a filter; otherwise a term.
 ## See Also
 
 - [How to Query Topics](../how-to/query-topics.md) — Practical examples and workflows
-- [CLI Reference: search](cli.md#hypha-search) — Command options
+- [CLI Reference: find](cli.md#hypha-find) — Command options

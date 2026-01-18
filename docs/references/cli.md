@@ -68,12 +68,12 @@ hypha list --sort created --json
 
 ---
 
-### `hypha search`
+### `hypha find`
 
-Search topics by query.
+Find topics by query.
 
 ```bash
-hypha search <QUERY> [OPTIONS]
+hypha find <QUERY> [OPTIONS]
 ```
 
 **Arguments:**
@@ -92,12 +92,57 @@ hypha search <QUERY> [OPTIONS]
 **Examples:**
 
 ```bash
-hypha search "meeting notes"
-hypha search "tags:work status:active"
-hypha search "priority:high"
+hypha find "meeting notes"
+hypha find "tags:work status:active"
+hypha find "priority:high"
 ```
 
 **See also:** [How to Query Topics](../how-to/query-topics.md)
+
+---
+
+### `hypha search`
+
+Search for patterns in topic content.
+
+```bash
+hypha search <PATTERN> [OPTIONS]
+```
+
+**Arguments:**
+
+| Argument    | Description                              |
+|-------------|------------------------------------------|
+| `<PATTERN>` | Regex pattern to search for in content   |
+
+**Options:**
+
+| Option          | Short | Description               |
+|-----------------|-------|---------------------------|
+| `--ignore-case` | `-i`  | Case-insensitive matching |
+| `--json`        |       | Output as JSON            |
+
+Unlike `hypha find` which queries frontmatter fields and titles, `search`
+searches the raw body content of topics using regex patterns.
+
+**Examples:**
+
+```bash
+hypha search "TODO"
+hypha search "meeting.*notes" --ignore-case
+hypha search "\\[.*\\]\\(.*\\.md\\)" --json
+```
+
+**Output:**
+
+```text
+/path/to/topic.md:
+  Topic Title
+  15:1: TODO: Review this section
+  42:10: Another TODO item here
+
+2 match(es) found
+```
 
 ---
 
