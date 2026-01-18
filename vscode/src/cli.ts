@@ -1,8 +1,15 @@
-import { execFile } from 'child_process';
+import { execFile, ExecFileOptions } from 'child_process';
 import { promisify } from 'util';
 import * as vscode from 'vscode';
 
 const execFileAsync = promisify(execFile);
+
+// 10MB buffer to handle large search results
+const EXEC_OPTIONS: ExecFileOptions = {
+    maxBuffer: 10 * 1024 * 1024,
+    timeout: 30000,
+    encoding: 'utf8',
+};
 
 export interface Topic {
     title: string;
@@ -21,6 +28,18 @@ export interface LintResult {
     title: string;
     path: string;
     warnings: LintWarning[];
+}
+
+export interface SearchMatch {
+    line: number;
+    column: number;
+    content: string;
+}
+
+export interface SearchResult {
+    path: string;
+    title: string;
+    matches: SearchMatch[];
 }
 
 export class HyphaCli {
@@ -69,8 +88,8 @@ export class HyphaCli {
         const fullArgs = root ? ['--root', root, ...args] : args;
 
         try {
-            const { stdout } = await execFileAsync(this.getBinaryPath(), fullArgs);
-            return stdout;
+            const { stdout } = await execFileAsync(this.getBinaryPath(), fullArgs, EXEC_OPTIONS);
+            return stdout as string;
         } catch (err: unknown) {
             const error = err as { stderr?: string; message?: string };
             throw new Error(error.stderr || error.message || 'Command failed');
@@ -82,8 +101,8 @@ export class HyphaCli {
         const fullArgs = root ? ['--root', root, ...args] : args;
 
         try {
-            const { stdout } = await execFileAsync(this.getBinaryPath(), fullArgs);
-            return stdout;
+            const { stdout } = await execFileAsync(this.getBinaryPath(), fullArgs, EXEC_OPTIONS);
+            return stdout as string;
         } catch (err: unknown) {
             const error = err as { stdout?: string; stderr?: string };
             if (error.stdout) {
@@ -103,10 +122,20 @@ export class HyphaCli {
         return this.parseTopics(output);
     }
 
-    async search(query: string): Promise<Topic[]> {
+    async find(query: string): Promise<Topic[]> {
         const sort = this.getSortArg();
-        const output = await this.run(['search', query, '--json', '--sort', sort]);
+        const output = await this.run(['find', query, '--json', '--sort', sort]);
         return this.parseTopics(output);
+    }
+
+    async search(pattern: string): Promise<SearchResult[]> {
+        try {
+            const output = await this.run(['search', pattern, '--json', '-i']);
+            return JSON.parse(output) as SearchResult[];
+        } catch (err) {
+            console.error('Search failed:', err);
+            return [];
+        }
     }
 
     async newTopic(title: string): Promise<string> {

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { HyphaCli } from './cli';
+import * as path from 'path';
+import { HyphaCli, SearchResult } from './cli';
 import { TopicTreeProvider, TopicItem } from './topicTree';
 import { DEBOUNCE_MS, PROJECT_REPO_URL, MAX_RECENT_TOPICS, MAX_DESCRIPTION_LENGTH, SEPARATOR_WIDTH } from './constants';
 
@@ -147,9 +148,9 @@ export function registerCommands(
             await vscode.commands.executeCommand('hypha.topicsView.focus');
             
             const inputBox = vscode.window.createInputBox();
-            inputBox.placeholder = 'Search topics (e.g., "status:active" or "meeting")';
+            inputBox.placeholder = 'Filter topics (e.g., "status:active" or "meeting")';
             inputBox.value = treeProvider.getSearchQuery();
-            inputBox.title = 'Search Topics';
+            inputBox.title = 'Filter View';
 
             let debounceTimer: NodeJS.Timeout | undefined;
 
@@ -217,7 +218,7 @@ export function registerCommands(
                 });
 
                 const quickPick = vscode.window.createQuickPick<QuickPickItem>();
-                quickPick.placeholder = 'Search topics... (e.g. subject:AI status:active)';
+                quickPick.placeholder = 'Find topic... (e.g. subject:AI status:active)';
                 quickPick.matchOnDescription = false;
                 quickPick.matchOnDetail = false;
                 quickPick.busy = true;
@@ -239,7 +240,7 @@ export function registerCommands(
                     debounceTimer = setTimeout(async () => {
                         quickPick.busy = true;
                         try {
-                            const results = value ? await cli.search(value) : await cli.list();
+                            const results = value ? await cli.find(value) : await cli.list();
                             quickPick.items = makeItems(results);
                         } catch {
                             // Keep current items on error
@@ -347,7 +348,7 @@ export function registerCommands(
 
     context.subscriptions.push(
         vscode.commands.registerCommand('hypha.settings', () => {
-            vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hypha');
+            vscode.commands.executeCommand('workbench.action.openSettings', '@ext:battagel.hypha-vscode');
         })
     );
 
@@ -365,19 +366,77 @@ export function registerCommands(
                 return;
             }
 
-            const query = await vscode.window.showInputBox({
-                prompt: 'Search in note content',
-                placeHolder: 'Enter search term...',
-            });
-            if (!query) return;
+            type SearchQuickPickItem = vscode.QuickPickItem & {
+                filePath: string;
+                line: number;
+            };
 
-            await vscode.commands.executeCommand('workbench.action.findInFiles', {
-                query: query,
-                filesToInclude: rootDir,
-                triggerSearch: true,
-                isRegex: false,
-                isCaseSensitive: false,
+            const quickPick = vscode.window.createQuickPick<SearchQuickPickItem>();
+            quickPick.placeholder = 'Search in note content...';
+            quickPick.matchOnDescription = true;
+            quickPick.matchOnDetail = true;
+
+            const makeItems = (results: SearchResult[]): SearchQuickPickItem[] => {
+                const items: SearchQuickPickItem[] = [];
+                const MAX_ITEMS = 100; // Limit to prevent UI overload
+                for (const result of results) {
+                    if (items.length >= MAX_ITEMS) break;
+                    const filename = path.basename(result.path);
+                    for (const match of result.matches) {
+                        if (items.length >= MAX_ITEMS) break;
+                        items.push({
+                            label: `$(file) ${result.title}`,
+                            description: `${filename}:${match.line}`,
+                            detail: match.content.trim(),
+                            filePath: result.path,
+                            line: match.line,
+                        });
+                    }
+                }
+                return items;
+            };
+
+            let debounceTimer: NodeJS.Timeout | undefined;
+            quickPick.onDidChangeValue(value => {
+                if (debounceTimer) clearTimeout(debounceTimer);
+                if (!value || value.length < 3) {
+                    quickPick.items = [];
+                    return;
+                }
+                debounceTimer = setTimeout(async () => {
+                    quickPick.busy = true;
+                    try {
+                        const results = await cli.search(value);
+                        quickPick.items = makeItems(results);
+                    } catch (err) {
+                        console.error('Search error:', err);
+                        quickPick.items = [];
+                    }
+                    quickPick.busy = false;
+                }, DEBOUNCE_MS);
             });
+
+            quickPick.onDidAccept(async () => {
+                const selected = quickPick.selectedItems[0];
+                if (!selected) return;
+
+                quickPick.hide();
+
+                const doc = await vscode.workspace.openTextDocument(selected.filePath);
+                const editor = await vscode.window.showTextDocument(doc);
+                
+                // Go to the matched line
+                const position = new vscode.Position(selected.line - 1, 0);
+                editor.selection = new vscode.Selection(position, position);
+                editor.revealRange(new vscode.Range(position, position), vscode.TextEditorRevealType.InCenter);
+            });
+
+            quickPick.onDidHide(() => {
+                if (debounceTimer) clearTimeout(debounceTimer);
+                quickPick.dispose();
+            });
+
+            quickPick.show();
         })
     );
 

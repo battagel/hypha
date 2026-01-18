@@ -2,7 +2,7 @@
   "name": "hypha-vscode",
   "displayName": "Hypha",
   "description": "VS Code integration for Hypha markdown notes",
-  "version": "1.0.1-alpha",
+  "version": "1.1.0",
   "publisher": "battagel",
   "icon": "./images/icon.png",
   "repository": {
@@ -75,9 +75,9 @@
       },
       {
         "command": "hypha.search",
-        "title": "Search Topics",
+        "title": "Filter View",
         "category": "Hypha",
-        "icon": "$(search)"
+        "icon": "$(filter)"
       },
       {
         "command": "hypha.refresh",
@@ -87,7 +87,7 @@
       },
       {
         "command": "hypha.clearSearch",
-        "title": "Clear Search",
+        "title": "Clear Filter",
         "category": "Hypha",
         "icon": "$(clear-all)"
       },
@@ -164,7 +164,7 @@
       },
       {
         "command": "hypha.quickFind",
-        "title": "Quick Find Topic",
+        "title": "Find Topic",
         "category": "Hypha",
         "icon": "$(go-to-file)"
       },
@@ -188,7 +188,7 @@
       },
       {
         "command": "hypha.searchBody",
-        "title": "Search in Content",
+        "title": "Search Content",
         "category": "Hypha",
         "icon": "$(search)"
       },
@@ -232,9 +232,14 @@
           "group": "navigation@2"
         },
         {
+          "command": "hypha.searchBody",
+          "when": "view == hypha.topicsView",
+          "group": "navigation@3"
+        },
+        {
           "command": "hypha.clearSearch",
           "when": "view == hypha.topicsView && hypha.hasSearch",
-          "group": "navigation@3"
+          "group": "navigation@4"
         },
         {
           "submenu": "hypha.sortSubmenu",
@@ -348,8 +353,8 @@
       },
       {
         "command": "hypha.searchBody",
-        "key": "ctrl+k *",
-        "mac": "cmd+k *"
+        "key": "ctrl+k s",
+        "mac": "cmd+k s"
       }
     ],
     "configuration": {

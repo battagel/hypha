@@ -218,7 +218,7 @@ export class TopicTreeProvider implements vscode.TreeDataProvider<vscode.TreeIte
             if (this.backlinksTarget) {
                 this.topics = await this.cli.backlinks(this.backlinksTarget);
             } else if (this.searchQuery) {
-                this.topics = await this.cli.search(this.searchQuery);
+                this.topics = await this.cli.find(this.searchQuery);
             } else if (this.filteredTopics !== null) {
                 // Use externally filtered topics from filter view
                 this.topics = this.filteredTopics;

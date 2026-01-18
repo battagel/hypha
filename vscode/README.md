@@ -12,8 +12,9 @@ VS Code integration for Hypha markdown notes.
 ### Sidebar
 
 - **Topic list** with configurable frontmatter badges and sorting
-- **Search** with field filters (`status:active`, `tags:work`)
-- **Quick Find** for fuzzy title search
+- **Filter** with field filters (`status:active`, `tags:work`)
+- **Find Topic** with fuzzy title and metadata search
+- **Search Content** to find text within note bodies
 - **Backlinks** view showing topics that link to selected topic
 - **Warning icons** for topics with lint issues
 - **Auto-sync** — Highlights current file in tree
@@ -24,10 +25,10 @@ VS Code integration for Hypha markdown notes.
 | ---------------- | ---------------- | -------------------------------- |
 | Focus Sidebar    | `Cmd+K O`        | Focus the Hypha topics view      |
 | New Topic        | `Cmd+K N`        | Create a new topic               |
-| Quick Find       | `Cmd+K F`        | Fuzzy search topic titles        |
-| Search           | `Cmd+K Shift+F`  | Search with filters              |
-| Search in Content| `Cmd+K Shift+S`  | Full-text search in note content |
-| Clear Search     | `Cmd+K C`        | Clear search filter              |
+| Find Topic       | `Cmd+K F`        | Find topic by title or metadata  |
+| Filter View      | `Cmd+K Shift+F`  | Filter sidebar with query        |
+| Search Content   | `Cmd+K S`        | Search within note content       |
+| Clear Filter     | `Cmd+K C`        | Clear filter                     |
 | Refresh          | `Cmd+K R`        | Refresh topic list               |
 | Lint             | `Cmd+K L`        | Check for issues                 |
 | Info             | `Cmd+K I`        | Show statistics                  |
