@@ -4,27 +4,46 @@ import { HyphaCli, SearchResult } from './cli';
 import { TopicTreeProvider, TopicItem } from './topicTree';
 import { DEBOUNCE_MS, PROJECT_REPO_URL, MAX_RECENT_TOPICS, MAX_DESCRIPTION_LENGTH, SEPARATOR_WIDTH } from './constants';
 
+/**
+ * Helper function to open a document in the editor.
+ */
+async function openDocument(filePath: string): Promise<void> {
+    const doc = await vscode.workspace.openTextDocument(filePath);
+    await vscode.window.showTextDocument(doc);
+}
+
+/**
+ * Helper function to create a new topic and open it.
+ */
+async function createAndOpenTopic(
+    cli: HyphaCli,
+    title: string,
+    treeProvider: TopicTreeProvider
+): Promise<void> {
+    const filePath = await cli.newTopic(title);
+    
+    treeProvider.refresh();
+
+    if (filePath) {
+        await openDocument(filePath);
+    }
+}
+
 export function registerCommands(
     context: vscode.ExtensionContext,
     cli: HyphaCli,
     treeProvider: TopicTreeProvider
 ): void {
     context.subscriptions.push(
-        vscode.commands.registerCommand('hypha.new', async () => {
-            const title = await vscode.window.showInputBox({
+        vscode.commands.registerCommand('hypha.new', async (providedTitle?: string) => {
+            const title = providedTitle || await vscode.window.showInputBox({
                 prompt: 'Enter topic title',
                 placeHolder: 'My New Topic',
             });
             if (!title) return;
 
             try {
-                const filePath = await cli.newTopic(title);
-                treeProvider.refresh();
-
-                if (filePath) {
-                    const doc = await vscode.workspace.openTextDocument(filePath);
-                    await vscode.window.showTextDocument(doc);
-                }
+                await createAndOpenTopic(cli, title, treeProvider);
             } catch (err) {
                 vscode.window.showErrorMessage(`Failed to create topic: ${err}`);
             }
@@ -60,8 +79,7 @@ export function registerCommands(
             }
 
             try {
-                const doc = await vscode.workspace.openTextDocument(filePath);
-                await vscode.window.showTextDocument(doc);
+                await openDocument(filePath);
             } catch (err) {
                 vscode.window.showErrorMessage(`Failed to open topic: ${err}`);
             }
@@ -241,7 +259,20 @@ export function registerCommands(
                         quickPick.busy = true;
                         try {
                             const results = value ? await cli.find(value) : await cli.list();
-                            quickPick.items = makeItems(results);
+                            
+                            // If no results and user typed something, offer to create a new topic
+                            if (value && results.length === 0) {
+                                quickPick.items = [{
+                                    label: `$(add) Create new topic: "${value}"`,
+                                    description: 'No matches found',
+                                    detail: 'Press Enter to create this topic',
+                                    path: '', // Will be created
+                                    isRecent: false,
+                                    alwaysShow: true,
+                                }];
+                            } else {
+                                quickPick.items = makeItems(results);
+                            }
                         } catch {
                             // Keep current items on error
                         }
@@ -255,11 +286,24 @@ export function registerCommands(
 
                     quickPick.hide();
 
+                    // Check if this is the "create new topic" item
+                    if (!selected.path && selected.label.startsWith('$(add)')) {
+                        const titleMatch = selected.label.match(/Create new topic: "(.+)"/);
+                        if (titleMatch) {
+                            const title = titleMatch[1];
+                            try {
+                                await createAndOpenTopic(cli, title, treeProvider);
+                            } catch (err) {
+                                vscode.window.showErrorMessage(`Failed to create topic: ${err}`);
+                            }
+                        }
+                        return;
+                    }
+
                     const newRecent = [selected.path, ...recentPaths.filter(p => p !== selected.path)].slice(0, MAX_RECENT_TOPICS);
                     await context.workspaceState.update('hypha.recentTopics', newRecent);
 
-                    const doc = await vscode.workspace.openTextDocument(selected.path);
-                    await vscode.window.showTextDocument(doc);
+                    await openDocument(selected.path);
                 });
 
                 quickPick.onDidHide(() => {
@@ -372,7 +416,7 @@ export function registerCommands(
             };
 
             const quickPick = vscode.window.createQuickPick<SearchQuickPickItem>();
-            quickPick.placeholder = 'Search in note content...';
+            quickPick.placeholder = 'Search in topic content...';
             quickPick.matchOnDescription = true;
             quickPick.matchOnDetail = true;
 
@@ -448,29 +492,20 @@ export function registerCommands(
         })
     );
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand('hypha.sortAlpha', async () => {
-            cli.setSortOrder('alpha');
-            await vscode.commands.executeCommand('setContext', 'hypha.sortOrder', 'alpha');
-            treeProvider.refresh();
-        })
-    );
+    // Register sort commands using a helper to reduce duplication
+    const registerSortCommand = (name: 'alpha' | 'modified' | 'created') => {
+        context.subscriptions.push(
+            vscode.commands.registerCommand(`hypha.sort${name.charAt(0).toUpperCase() + name.slice(1)}`, async () => {
+                cli.setSortOrder(name);
+                await vscode.commands.executeCommand('setContext', 'hypha.sortOrder', name);
+                treeProvider.refresh();
+            })
+        );
+    };
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand('hypha.sortModified', async () => {
-            cli.setSortOrder('modified');
-            await vscode.commands.executeCommand('setContext', 'hypha.sortOrder', 'modified');
-            treeProvider.refresh();
-        })
-    );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand('hypha.sortCreated', async () => {
-            cli.setSortOrder('created');
-            await vscode.commands.executeCommand('setContext', 'hypha.sortOrder', 'created');
-            treeProvider.refresh();
-        })
-    );
+    registerSortCommand('alpha');
+    registerSortCommand('modified');
+    registerSortCommand('created');
 
 }
 

@@ -129,6 +129,22 @@ export class MessageItem extends vscode.TreeItem {
 }
 
 /**
+ * Action item shown in tree for creating new topics.
+ */
+export class CreateTopicItem extends vscode.TreeItem {
+    constructor(public readonly topicTitle: string) {
+        super(`Create new topic: "${topicTitle}"`, vscode.TreeItemCollapsibleState.None);
+        this.iconPath = new vscode.ThemeIcon('add');
+        this.contextValue = 'createTopic';
+        this.command = {
+            command: 'hypha.new',
+            title: 'Create Topic',
+            arguments: [topicTitle]
+        };
+    }
+}
+
+/**
  * Tree data provider for the Hypha sidebar.
  */
 export class TopicTreeProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -232,7 +248,10 @@ export class TopicTreeProvider implements vscode.TreeDataProvider<vscode.TreeIte
                     return [new MessageItem(`No backlinks to "${this.backlinksTarget}"`, 'search')];
                 }
                 if (this.searchQuery) {
-                    return [new MessageItem(`No results for "${this.searchQuery}"`, 'search')];
+                    return [
+                        new MessageItem(`No results for "${this.searchQuery}"`, 'search'),
+                        new CreateTopicItem(this.searchQuery)
+                    ];
                 }
                 return [];
             }
