@@ -2,9 +2,9 @@
   "name": "hypha-vscode",
   "displayName": "Hypha",
   "description": "VS Code integration for Hypha markdown notes",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "battagel",
-  "icon": "./images/icon128.png",
+  "icon": "./images/icon320.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/battagel/hypha"
