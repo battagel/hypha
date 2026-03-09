@@ -43,4 +43,4 @@ See [docs/](docs/) for full documentation following the [Diátaxis framework](ht
 
 ## License
 
-[MIT](LICENSE.md) © 2025 Matthew Battagel
+[MIT](LICENSE.md) © 2026 Matthew Battagel
