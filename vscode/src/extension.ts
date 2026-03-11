@@ -16,14 +16,17 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     // Check if hypha CLI is available
     const available = await cli.isAvailable();
     if (!available) {
-        vscode.window.showWarningMessage(
-            'Hypha CLI not found. Please install Hypha and ensure it is in your PATH, or configure the binary path in settings.',
-            'Open Documentation'
-        ).then(selection => {
-            if (selection === 'Open Documentation') {
-                vscode.env.openExternal(vscode.Uri.parse(PROJECT_REPO_URL));
-            }
-        });
+        const choice = await vscode.window.showWarningMessage(
+            'Hypha CLI not found. The extension requires the Hypha CLI binary.',
+            'Install CLI',
+            'Open Settings'
+        );
+        
+        if (choice === 'Install CLI') {
+            vscode.env.openExternal(vscode.Uri.parse(`${PROJECT_REPO_URL}#installation`));
+        } else if (choice === 'Open Settings') {
+            vscode.commands.executeCommand('workbench.action.openSettings', 'hypha.binaryPath');
+        }
     }
 
     // Create diagnostics collection for lint warnings

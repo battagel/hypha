@@ -81,9 +81,48 @@ jobs:
   build-extension:
     name: Build VS Code Extension
     runs-on: ubuntu-latest
+    needs: [build-cli]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Determine Version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building extension for version: $VERSION"
+
+      - name: Download CLI Binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: cli-artifacts
+
+      - name: Prepare Bundled Binaries
+        run: |
+          echo "Organizing binaries for bundling..."
+          mkdir -p vscode/bin/{darwin-x64,darwin-arm64,linux-x64,win32-x64}
+          
+          # Copy each platform binary to the correct location
+          cp cli-artifacts/hypha-cli-darwin-x86_64/* vscode/bin/darwin-x64/hypha
+          cp cli-artifacts/hypha-cli-darwin-aarch64/* vscode/bin/darwin-arm64/hypha
+          cp cli-artifacts/hypha-cli-linux-x86_64/* vscode/bin/linux-x64/hypha
+          cp cli-artifacts/hypha-cli-windows-x86_64/* vscode/bin/win32-x64/hypha.exe
+          
+          # Make binaries executable
+          chmod +x vscode/bin/*/hypha
+          
+          # Verify
+          echo "Bundled binaries:"
+          ls -lh vscode/bin/*
+          
+          # Clean up artifacts
+          rm -rf cli-artifacts
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

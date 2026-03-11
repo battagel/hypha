@@ -5,27 +5,31 @@ A step-by-step guide to installing and using the Hypha extension for VS Code.
 ## Prerequisites
 
 - [VS Code](https://code.visualstudio.com/) 1.85 or later
-- [Hypha CLI](getting-started-cli.md) installed and configured
 
-The extension requires the CLI to be installed and in your `PATH`. Install the CLI first if you haven't already.
+The extension bundles the Hypha CLI for all platforms — no separate installation required. If you already have the CLI installed, the extension will use it automatically.
 
 ## Installation
 
-### Install from Release (Recommended)
+### Install from VS Code Marketplace (Recommended)
 
-Download the `hypha-*.vsix` file from the [latest release](https://github.com/battagel/hypha/releases/latest) and install:
+1. Open VS Code
+2. Go to Extensions view
+3. Search for **Hypha**
+4. Click **Install**
+
+Or install from the command line:
+
+```bash
+code --install-extension battagel.hypha-vscode
+```
+
+### Install from Release
+
+Alternatively, download the `.vsix` from the [latest release](https://github.com/battagel/hypha/releases/latest) and run:
 
 ```bash
 code --install-extension hypha-*.vsix
 ```
-
-Or install via the VS Code UI:
-
-1. Open VS Code
-2. Go to Extensions view (`Cmd+Shift+X` or `Ctrl+Shift+X`)
-3. Click the `...` menu at the top of the Extensions view
-4. Select **Install from VSIX...**
-5. Browse to the downloaded `.vsix` file
 
 ## Initial Configuration
 

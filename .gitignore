@@ -4,6 +4,7 @@ cli/target/
 # Node.js
 vscode/node_modules/
 vscode/out/
+vscode/bin/
 
 # VS Code extension packages
 vscode/*.vsix

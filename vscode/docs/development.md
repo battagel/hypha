@@ -100,3 +100,65 @@ Install locally:
 ```bash
 code --install-extension hypha-vscode-0.1.0.vsix
 ```
+
+## Architecture
+
+The extension is a thin wrapper around the Hypha CLI:
+
+1. **Spawns CLI commands** with `--json` output flags
+2. **Parses JSON responses** from stdout
+3. **Renders in VS Code UI** (tree views, quick picks, diagnostics)
+
+**Key principle**: Zero business logic in the extension. All operations (indexing, querying, linking, validation) are handled by the Rust CLI.
+
+### Benefits
+
+- **Consistency**: CLI and extension use identical logic
+- **Maintainability**: Single source of truth for features
+- **Performance**: Fast Rust implementation
+- **Portability**: Users can switch between CLI and GUI seamlessly
+
+See [Architecture documentation](../../docs/explanations/architecture.md) for system-wide design.
+
+## Binary Resolution
+
+The extension looks for the Hypha CLI binary in this order:
+
+1. **User configuration** — `hypha.binaryPath` setting (highest priority)
+2. **Bundled binary** — Platform-specific binary in `bin/<platform>/hypha`
+3. **System PATH** — `hypha` command in PATH (fallback)
+
+### Bundled Binaries
+
+Production releases bundle pre-compiled binaries for all supported platforms:
+
+- `bin/darwin-x64/hypha` — macOS Intel
+- `bin/darwin-arm64/hypha` — macOS Apple Silicon
+- `bin/linux-x64/hypha` — Linux x86_64
+- `bin/win32-x64/hypha.exe` — Windows x86_64
+
+These are automatically included in the `.vsix` package but ignored by git.
+
+### Development Setup
+
+For local development, install the CLI separately:
+
+```bash
+cd ../cli
+cargo build --release
+sudo cp target/release/hypha /usr/local/bin/
+```
+
+Or set `hypha.binaryPath` in your VS Code settings to point to your development binary.
+
+### Manual Binary Download
+
+To manually populate bundled binaries (e.g., for testing packaging):
+
+```bash
+npm run download-binaries
+```
+
+This downloads the latest release binaries from GitHub and places them in `bin/`.
+
+**Note:** This is not needed for normal development or CI builds.
