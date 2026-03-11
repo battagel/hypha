@@ -6,7 +6,7 @@ A step-by-step guide to installing and using the Hypha extension for VS Code.
 
 - [VS Code](https://code.visualstudio.com/) 1.85 or later
 
-The extension bundles the Hypha CLI for all platforms — no separate installation required. If you already have the CLI installed, the extension will use it automatically.
+The extension bundles the Hypha CLI for all platforms — no separate installation required. When running commands, the extension first uses any CLI path you configure in its settings, then the bundled CLI, and finally any `hypha` executable found on your PATH.
 
 ## Installation
 
