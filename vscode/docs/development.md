@@ -151,14 +151,4 @@ sudo cp target/release/hypha /usr/local/bin/
 
 Or set `hypha.binaryPath` in your VS Code settings to point to your development binary.
 
-### Manual Binary Download
-
-To manually populate bundled binaries (e.g., for testing packaging):
-
-```bash
-npm run download-binaries
-```
-
-This downloads the latest release binaries from GitHub and places them in `bin/`.
-
-**Note:** This is not needed for normal development or CI builds.
+Bundled binaries used in packaged extensions are handled automatically and normally do not require any manual setup during development.
