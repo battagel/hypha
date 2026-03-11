@@ -5,6 +5,23 @@ All notable changes to Hypha will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0]
+
+### Added
+
+- **VS Code**: Published to the VS Code Marketplace (`battagel.hypha-vscode`)
+- **VS Code**: Extension now bundles platform-specific CLI binaries — no separate CLI installation required
+- **VS Code**: Provide option to create new topic when there are no search results
+
+### Changed
+
+- **VS Code**: Updated extension icon to 320px variant
+- **VS Code**: Extension README rewritten as a marketplace-facing page
+- **VS Code**: Marketplace installation instructions added to getting started tutorial
+- **VS Code**: Architecture documentation moved to `vscode/docs/development.md`
+- **CI**: Release workflow now builds CLI binaries first and bundles them into the `.vsix`
+- **CI**: `.vscodeignore` updated to exclude dev files (`src/`, `docs/`, `scripts/`, `node_modules/`, etc.) from packaged extension
+
 ## [1.1.0]
 
 ### Added
