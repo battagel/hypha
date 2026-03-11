@@ -2,6 +2,8 @@
 .vscode-test/**
 out/test/**
 src/**
+scripts/**
+docs/**
 .gitignore
 vsc-extension-quickstart.md
 **/tsconfig.json
@@ -9,5 +11,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 node_modules/**
+package-lock.json
 .eslintrc.json
 tsconfig.json
+.DS_Store

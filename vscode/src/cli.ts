@@ -1,6 +1,8 @@
 import { execFile, ExecFileOptions } from 'child_process';
 import { promisify } from 'util';
 import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
 
 const execFileAsync = promisify(execFile);
 
@@ -45,9 +47,49 @@ export interface SearchResult {
 export class HyphaCli {
     private sortOrder: 'alpha' | 'modified' | 'created' = 'alpha';
 
+    private getBundledBinaryPath(): string | null {
+        const ext = process.platform === 'win32' ? '.exe' : '';
+        
+        // Map process.platform and process.arch to our binary directory structure
+        const platformMap: Record<string, string> = {
+            'darwin-x64': 'darwin-x64',
+            'darwin-arm64': 'darwin-arm64',
+            'linux-x64': 'linux-x64',
+            'win32-x64': 'win32-x64'
+        };
+        
+        const platformKey = `${process.platform}-${process.arch}`;
+        const platformDir = platformMap[platformKey];
+        
+        if (!platformDir) {
+            return null;
+        }
+        
+        // Path to bundled binary in the extension
+        const bundledPath = path.join(__dirname, '..', 'bin', platformDir, `hypha${ext}`);
+        
+        if (fs.existsSync(bundledPath)) {
+            return bundledPath;
+        }
+        
+        return null;
+    }
+
     private getBinaryPath(): string {
         const config = vscode.workspace.getConfiguration('hypha');
-        return config.get<string>('binaryPath') || 'hypha';
+        const configPath = config.get<string>('binaryPath');
+        
+        // Priority: 1. User config, 2. Bundled binary, 3. PATH
+        if (configPath) {
+            return configPath;
+        }
+        
+        const bundled = this.getBundledBinaryPath();
+        if (bundled) {
+            return bundled;
+        }
+        
+        return 'hypha';
     }
 
     getRootDir(): string | undefined {
