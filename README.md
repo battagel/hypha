@@ -3,16 +3,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
 
-A CLI and VS Code extension for managing markdown notes with user-defined metadata. Your notes, your schema, your workflow.
+A CLI and VS Code extension for managing markdown notes with custom metadata.
 
 ## Why Hypha?
 
-Most note-taking tools force you into their structure. Hypha takes a different approach: **you define the metadata that matters to you**.
+Most note-taking tools force you into their structure. Hypha takes a different approach: **you define the metadata that matters to you**. Query your notes using your own schema.
 
-- **Flexible schema** — Add any frontmatter fields; all are queryable
-- **Plain files** — Your notes stay as portable markdown
-- **Fast** — Rust CLI indexes hundreds of files in milliseconds
-- **Editor agnostic** — CLI works anywhere; VS Code extension for GUI
+- **Flexible schema** - Add any frontmatter fields; all are queryable
+- **Plain files** - Your notes stay as portable markdown
+- **Fast** - The Rust CLI indexes hundreds of files in milliseconds
+- **Editor agnostic** - Use the CLI anywhere or the VS Code extension for a GUI
 
 ```yaml
 ---
@@ -29,8 +29,8 @@ hypha find "status:in-progress client:acme"
 
 ## Quick Start
 
-- [Getting Started with the CLI](docs/tutorials/getting-started-cli.md)
 - [Getting Started with VS Code](docs/tutorials/getting-started-vscode.md)
+- [Getting Started with the CLI](docs/tutorials/getting-started-cli.md)
 
 ## Documentation
 

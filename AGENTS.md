@@ -10,8 +10,8 @@ Project-wide docs in `docs/` follow the Diátaxis framework:
 
 - `tutorials/` - Learning-oriented guides for new users
 - `how-to/` - Task-oriented guides for specific goals
-- `reference/` - Information-oriented lookup material
-- `explanation/` - Understanding-oriented conceptual docs
+- `references/` - Information-oriented lookup material
+- `explanations/` - Understanding-oriented conceptual docs
 - `decisions/` - Architecture Decision Records (ADRs)
 
 Documentation should be written in markdown that follows the linting standards
